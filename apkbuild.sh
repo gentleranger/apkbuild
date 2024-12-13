@@ -1,8 +1,8 @@
 #!/bin/bash
 
 checksudo(){
-  if [ ! $(groups "$USER" | grep -q '\b\(sudo\|wheel\)\b') ]; then
-    printf "\nUser '$USER' does not have sudo priviledges\n"
+  if ! groups "$USER" | grep -q '\b\(sudo\|wheel\)\b'; then
+    printf "\nUser '%s' does not have sudo priviledges\n" "$USER"
     printf "If you think this is a miskate, then report it on github\n"
     exit 1
   fi
@@ -14,7 +14,7 @@ if [ "$UID" -eq 0 ]; then
 fi
 
 if [ -f /etc/os-release ]; then
-  . /etc/os-release
+  source /etc/os-release
 else
   printf "Can't determine distribution family\n"
   printf "Report this issue on github\n"
@@ -53,7 +53,7 @@ elif grep "debian" /etc/os-release 1> /dev/null; then
     sudo -K
   fi
 else
-  printf "Distribution family '$ID_LIKE' not recognized\n"
+  printf "Distribution family '%s' not recognized\n" "$ID_LIKE"
   printf "Report this issue on github\n"
   exit 1
 fi
@@ -67,7 +67,7 @@ sdkChecksum="2d2d50857e4eb553af5a6dc3ad507a17adf43d115264b1afc116f95c92e5e258"
 githubRepo="https://github.com/Docile-Alligator/Infinity-For-Reddit.git"
 apiUtils="$HOME/Infinity/app/src/main/java/ml/docilealligator/infinityforreddit/utils/APIUtils.java"
 buildGradle="$HOME/Infinity/app/build.gradle"
-apk="$HOME"/Infinity/app/build/outputs/apk/release/app*.apk
+apk="$HOME/Infinity/app/build/outputs/apk/release/app-release.apk"
 
 wget -q --show-progress "$androidSdk" -O "$HOME"/android-sdk.zip
 sync
@@ -133,12 +133,12 @@ cd "$HOME"/Infinity || exit 1
 ./gradlew assembleRelease
 ./gradlew --stop
 
-if ! ls $apk 1> /dev/null 2>&1; then
+if ! ls "$apk" 1> /dev/null 2>&1; then
   printf "Apk not found !!\n"
   exit 1
 else
   mkdir "$HOME"/Downloads
-  mv $apk "$HOME/Downloads/Infinity.apk"
+  mv "$apk" "$HOME/Downloads/Infinity.apk"
   printf "Compiled apk can be found in the ~/Downloads folder.\n"
   password=""
   username=""
