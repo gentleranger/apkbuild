@@ -22,6 +22,10 @@ if [ $(grep "arch" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
   printf "\nInstalling required packages...\n"
   sudo pacman -S --noconfirm jdk17-openjdk libarchive
   sudo -K
+  export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
+  cat >>"$HOME"/.bashrc<< EOF
+export JAVA_HOME="/usr/lib/jvm/java-17-openjdk" 
+EOF
 elif [ $(grep "debian" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
   printf "Debian based distribution detected.\n"
   sudo -K
@@ -32,6 +36,10 @@ elif [ $(grep "debian" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
   printf "\nInstalling the required packages...\n"
   sudo apt install -y -qq openjdk-17-jdk libarchive-tools
   sudo -K
+  export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+  cat >>"$HOME"/.bashrc<< EOF
+export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+EOF
 else
   printf "Distribution family '$ID_LIKE' not recognized\n"
   printf "Report this issue on github\n"
@@ -67,11 +75,9 @@ mv "$HOME"/android-sdk/cmdline-tools/cmdline-tools "$HOME"/android-sdk/cmdline-t
 sync
 
 export ANDROID_SDK_ROOT="$HOME/android-sdk"
-export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
 export PATH="$PATH:$HOME/android-sdk/cmdline-tools/tools/bin"
 cat >>"$HOME"/.bashrc<< EOF
 export ANDROID_SDK_ROOT="$HOME/android-sdk"
-export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
 export PATH="$PATH:$HOME/android-sdk/cmdline-tools/tools/bin"
 EOF
 
