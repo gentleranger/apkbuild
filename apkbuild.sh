@@ -187,7 +187,7 @@ if ! ls "$apk" 1> /dev/null 2>&1; then
   printf "Apk not found !!\n"
   exit 1
 else
-  mkdir "$HOME"/Downloads
+  if [ ! -d "$HOME"/Downloads ]; then mkdir "$HOME"/Downloads; fi
   mv "$apk" "$HOME/Downloads/Infinity.apk"
   printf "Compiled apk can be found in the ~/Downloads folder.\n"
   password=""
