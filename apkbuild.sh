@@ -21,11 +21,11 @@ else
   exit 1
 fi
 
+touch "$HOME"/.buildrc
+echo "source $HOME/.buildrc" >> "$HOME"/.bashrc
 if grep "arch" /etc/os-release 1> /dev/null; then
-  export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
-  cat >>"$HOME"/.bashrc<< EOF
-export JAVA_HOME="/usr/lib/jvm/java-17-openjdk" 
-EOF
+  echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"' > "$HOME"/.buildrc
+  source "$HOME"/.buildrc
   if ! pacman -Q jdk17-openjdk &>/dev/null || ! pacman -Q libarchive &> /dev/null; then
     checksudo
     printf "Archlinux based distribution detected.\n"
@@ -38,10 +38,8 @@ EOF
     sudo -K
   fi
 elif grep "debian" /etc/os-release 1> /dev/null; then
-  export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
-  cat >>"$HOME"/.bashrc<< EOF
-export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
-EOF
+  echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"' > "$HOME"/.buildrc
+  source "$HOME"/.buildrc
   if ! apt list --installed openjdk-17-jdk &>/dev/null || ! apt list --installed libarchive-tools &>/dev/null; then
     checksudo
     printf "Debian based distribution detected.\n"
@@ -88,12 +86,11 @@ bsdtar -xf "$HOME"/android-sdk.zip -C "$HOME"/android-sdk/cmdline-tools
 mv "$HOME"/android-sdk/cmdline-tools/cmdline-tools "$HOME"/android-sdk/cmdline-tools/tools
 sync
 
-export ANDROID_SDK_ROOT="$HOME/android-sdk"
-export PATH="$PATH:$HOME/android-sdk/cmdline-tools/tools/bin"
-cat >>"$HOME"/.bashrc<< EOF
+cat >>"$HOME"/.buildrc<< EOF
 export ANDROID_SDK_ROOT="$HOME/android-sdk"
 export PATH="$PATH:$HOME/android-sdk/cmdline-tools/tools/bin"
 EOF
+source "$HOME"/.buildrc
 
 echo yes | sdkmanager "platforms;android-30" "build-tools;30.0.3"
 git clone --depth=1 "$githubRepo" "$HOME"/Infinity
