@@ -3,7 +3,27 @@
 if [ "$UID" -eq 0 ]; then
   printf "Running this script as root is not secure !"
   exit 1
+fi
+
+if [ -f /etc/os-release ]; then
+  . /etc/os-release
 else
+  printf "Can't determine distribution family\n"
+  printf "Report this issue on github\n"
+  exit 1
+fi
+
+if [ $(grep "arch" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
+  printf "Archlinux based distribution detected.\n"
+  sudo -K
+  sudo true
+  printf "Updating the system...\n"
+  sudo pacman -Syu --noconfirm
+  printf "\nInstalling required packages...\n"
+  sudo pacman -S --noconfirm jdk17-openjdk libarchive
+  sudo -K
+elif [ $(grep "debian" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
+  printf "Debian based distribution detected.\n"
   sudo -K
   sudo true
   printf "Updating the system...\n"
@@ -12,6 +32,10 @@ else
   printf "\nInstalling the required packages...\n"
   sudo apt install -y -qq openjdk-17-jdk libarchive-tools
   sudo -K
+else
+  printf "Distribution family '$ID_LIKE' not recognized\n"
+  printf "Report this issue on github\n"
+  exit 1
 fi
 
 read -rp "Enter your Reddit Username: " username
