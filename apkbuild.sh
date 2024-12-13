@@ -22,34 +22,38 @@ else
 fi
 
 if [ $(grep "arch" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
-  checksudo
-  printf "Archlinux based distribution detected.\n"
-  sudo -K
-  sudo true
-  printf "Updating the system...\n"
-  sudo pacman -Syu --noconfirm
-  printf "\nInstalling required packages...\n"
-  sudo pacman -S --noconfirm jdk17-openjdk libarchive
-  sudo -K
   export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
   cat >>"$HOME"/.bashrc<< EOF
 export JAVA_HOME="/usr/lib/jvm/java-17-openjdk" 
 EOF
+  if ! pacman -Q jdk17-openjdk &>/dev/null || ! pacman -Q libarchive &> /dev/null; then
+    checksudo
+    printf "Archlinux based distribution detected.\n"
+    sudo -K
+    sudo true
+    printf "Updating the system...\n"
+    sudo pacman -Syu --noconfirm
+    printf "\nInstalling required packages...\n"
+    sudo pacman -S --noconfirm jdk17-openjdk libarchive
+    sudo -K
+  fi
 elif [ $(grep "debian" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
-  checksudo
-  printf "Debian based distribution detected.\n"
-  sudo -K
-  sudo true
-  printf "Updating the system...\n"
-  sudo apt update -qq
-  sudo apt upgrade -y -qq
-  printf "\nInstalling the required packages...\n"
-  sudo apt install -y -qq openjdk-17-jdk libarchive-tools
-  sudo -K
   export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
   cat >>"$HOME"/.bashrc<< EOF
 export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
 EOF
+  if ! apt list --installed openjdk-17-jdk &>/dev/null || ! apt list --installed libarchive-tools &>/dev/null; then
+    checksudo
+    printf "Debian based distribution detected.\n"
+    sudo -K
+    sudo true
+    printf "Updating the system...\n"
+    sudo apt update -qq
+    sudo apt upgrade -y -qq
+    printf "\nInstalling the required packages...\n"
+    sudo apt install -y -qq openjdk-17-jdk libarchive-tools
+    sudo -K
+  fi
 else
   printf "Distribution family '$ID_LIKE' not recognized\n"
   printf "Report this issue on github\n"
