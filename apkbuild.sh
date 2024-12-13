@@ -26,9 +26,9 @@ echo "source $HOME/.buildrc" >> "$HOME"/.bashrc
 if grep "arch" /etc/os-release 1> /dev/null; then
   echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"' > "$HOME"/.buildrc
   source "$HOME"/.buildrc
+  printf "Archlinux based distribution detected.\n"
   if ! pacman -Q jdk17-openjdk &>/dev/null || ! pacman -Q libarchive &> /dev/null; then
     checksudo
-    printf "Archlinux based distribution detected.\n"
     sudo -K
     sudo true
     printf "Updating the system...\n"
@@ -40,9 +40,9 @@ if grep "arch" /etc/os-release 1> /dev/null; then
 elif grep "debian" /etc/os-release 1> /dev/null; then
   echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"' > "$HOME"/.buildrc
   source "$HOME"/.buildrc
-  if ! apt list --installed openjdk-17-jdk &>/dev/null || ! apt list --installed libarchive-tools &>/dev/null; then
+  printf "Debian based distribution detected.\n"
+  if ! dpkg -l | grep -q "^ii  openjdk-17-jdk:amd64 " || ! dpkg -l | grep -q "^ii  libarchive-tools "; then
     checksudo
-    printf "Debian based distribution detected.\n"
     sudo -K
     sudo true
     printf "Updating the system...\n"
