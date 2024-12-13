@@ -2,14 +2,15 @@
 
 checksudo(){
   if ! groups "$USER" | grep -q '\b\(sudo\|wheel\)\b'; then
-    printf "\nUser '%s' does not have sudo priviledges\n" "$USER"
+    printf "User '%s' does not have sudo priviledges\n" "$USER"
+    printf "Ask your administrator to install:\n%s, %s\n" "$1" "$2"
     printf "If you think this is a miskate, then report it on github\n"
     exit 1
   fi
 }
 
 if [ "$UID" -eq 0 ]; then
-  printf "Running this script as root is not secure !"
+  printf "Running this script as root is not secure !\n"
   exit 1
 fi
 
@@ -31,7 +32,7 @@ if grep "arch" /etc/os-release 1> /dev/null; then
   source "$HOME"/.buildrc
   printf "Archlinux based distribution detected.\n"
   if ! pacman -Q jdk17-openjdk &>/dev/null || ! pacman -Q libarchive &> /dev/null; then
-    checksudo
+    checksudo "jdk17-openjdk" "libarchive"
     sudo -K
     sudo true
     printf "Updating the system...\n"
@@ -45,7 +46,7 @@ elif grep "debian" /etc/os-release 1> /dev/null; then
   source "$HOME"/.buildrc
   printf "Debian based distribution detected.\n"
   if ! dpkg -l | grep -q "^ii  openjdk-17-jdk:amd64 " || ! dpkg -l | grep -q "^ii  libarchive-tools "; then
-    checksudo
+    checksudo "openjdk-17-jdk" "libarchive-tools"
     sudo -K
     sudo true
     printf "Updating the system...\n"
