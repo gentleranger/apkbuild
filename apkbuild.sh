@@ -1,5 +1,13 @@
 #!/bin/bash
 
+checksudo(){
+  if [ ! $(groups "$USER" | grep -q '\b\(sudo\|wheel\)\b') ]; then
+    printf "\nUser '$USER' does not have sudo priviledges\n"
+    printf "If you think this is a miskate, then report it on github\n"
+    exit 1
+  fi
+}
+
 if [ "$UID" -eq 0 ]; then
   printf "Running this script as root is not secure !"
   exit 1
@@ -14,6 +22,7 @@ else
 fi
 
 if [ $(grep "arch" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
+  checksudo
   printf "Archlinux based distribution detected.\n"
   sudo -K
   sudo true
@@ -27,6 +36,7 @@ if [ $(grep "arch" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
 export JAVA_HOME="/usr/lib/jvm/java-17-openjdk" 
 EOF
 elif [ $(grep "debian" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
+  checksudo
   printf "Debian based distribution detected.\n"
   sudo -K
   sudo true
