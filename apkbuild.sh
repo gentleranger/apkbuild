@@ -99,7 +99,7 @@ source "$HOME"/.buildrc
 echo yes | sdkmanager "platforms;android-30" "build-tools;30.0.3"
 git clone --depth=1 "$githubRepo" "$HOME"/Infinity
 
-password=$(head -c 150 /dev/urandom | tr -dc 'a-zA-Z0-9~!@#%^&*()-+={[}]|\:;"<,>.?/' | head -c 30)
+password=$(head -c 150 /dev/urandom | tr -dc 'a-zA-Z0-9~!@#%^&*()-+={[}]|\:;<,>.?/' | head -c 30)
 mkdir -pv "$HOME"/keystore
 keytool -genkey -v \
 -keystore "$HOME"/keystore/alephzero.jks \
