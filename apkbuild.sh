@@ -21,7 +21,7 @@ else
   exit 1
 fi
 
-if [ $(grep "arch" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
+if grep "arch" /etc/os-release 1> /dev/null; then
   export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
   cat >>"$HOME"/.bashrc<< EOF
 export JAVA_HOME="/usr/lib/jvm/java-17-openjdk" 
@@ -37,7 +37,7 @@ EOF
     sudo pacman -S --noconfirm jdk17-openjdk libarchive
     sudo -K
   fi
-elif [ $(grep "debian" /etc/os-release 1> /dev/null; echo "$?") = "0" ]; then
+elif grep "debian" /etc/os-release 1> /dev/null; then
   export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
   cat >>"$HOME"/.bashrc<< EOF
 export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
