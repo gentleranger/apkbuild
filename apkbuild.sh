@@ -134,6 +134,7 @@ sed -i "/disable 'MissingTranslation'/a\\
 cd "$HOME"/Infinity || exit 1
 ./gradlew updateLintBaseline
 ./gradlew assembleRelease
+./gradlew --stop
 
 if ! ls $apk 1> /dev/null 2>&1; then
   printf "Apk not found !!\n"
