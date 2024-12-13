@@ -9,6 +9,14 @@ checksudo(){
   fi
 }
 
+failsafe(){
+  printf "You've already run this script once\n"
+  printf "Running it again may cause problems with your current setup\n"
+  printf "Please cleanup your system first\n"
+  printf "Refer to the github repo for more info\n"
+  exit 1
+}
+
 if [ "$UID" -eq 0 ]; then
   printf "Running this script as root is not secure !\n"
   exit 1
@@ -20,6 +28,24 @@ else
   printf "Can't determine distribution family\n"
   printf "Report this issue on github\n"
   exit 1
+fi
+
+if grep -q "source $HOME/.buildrc" "$HOME"/.bashrc; then
+  failsafe
+elif [ -f "$HOME"/.buildrc ]; then
+  failsafe
+elif [ -f "$HOME"/android-sdk.zip ]; then
+  failsafe
+elif [ -d "$HOME"/android-sdk ]; then
+  failsafe
+elif [ -d "$HOME"/keystore ]; then
+  failsafe
+elif [ -d "$HOME"/Infinity ]; then
+  failsafe
+elif [ -d "$HOME"/.gradle ]; then
+  failsafe
+elif [ -d "$HOME"/.android ]; then
+  failsafe
 fi
 
 touch "$HOME"/.buildrc
