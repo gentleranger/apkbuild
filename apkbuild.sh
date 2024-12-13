@@ -12,7 +12,7 @@ checksudo(){
 failsafe(){
   printf "You've already run this script once\n"
   printf "Running it again may cause problems with your current setup\n"
-  printf "Please cleanup your system first\n"
+  printf "Run with the '--uninstall' argument first\n"
   printf "Refer to the github repo for more info\n"
   exit 1
 }
@@ -27,6 +27,26 @@ if [ -f /etc/os-release ]; then
 else
   printf "Can't determine distribution family\n"
   printf "Report this issue on github\n"
+  exit 1
+fi
+
+if [ "$1" = "--uninstall" ]; then
+  if grep -q "source $HOME/.buildrc" "$HOME"/.bashrc; then sed -i "\|source $HOME/.buildrc|d" "$HOME"/.bashrc; fi
+  if [ -f "$HOME"/.buildrc ]; then rm "$HOME"/.buildrc; fi
+  if [ -f "$HOME"/android-sdk.zip ]; then rm "$HOME"/android-sdk.zip; fi
+  if [ -d "$HOME"/android-sdk ]; then rm -rf "$HOME"/android-sdk; fi
+  if [ -d "$HOME"/keystore ]; then rm -rf "$HOME"/keystore; fi
+  if [ -d "$HOME"/Infinity ]; then rm -rf "$HOME"/Infinity; fi
+  if [ -d "$HOME"/.gradle ]; then rm -rf "$HOME"/.gradle; fi
+  if [ -d "$HOME"/.android ]; then rm -rf "$HOME"/.android; fi
+  printf "Uninstall Successful\n"
+  exit 0
+elif [ "$1" = "--install" ]; then
+  printf ""
+else
+  printf "Unrecognized option: '%s'\n" "$1"
+  printf "Usage: ./apkbuild.sh [OPTION]\n"
+  printf "Arguments: --install/--uninstall\n"
   exit 1
 fi
 
