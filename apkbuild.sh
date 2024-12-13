@@ -22,7 +22,10 @@ else
 fi
 
 touch "$HOME"/.buildrc
-echo "source $HOME/.buildrc" >> "$HOME"/.bashrc
+if ! grep -q "source $HOME/.buildrc" "$HOME"/.bashrc; then
+  echo "source $HOME/.buildrc" >> "$HOME"/.bashrc
+fi
+
 if grep "arch" /etc/os-release 1> /dev/null; then
   echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"' > "$HOME"/.buildrc
   source "$HOME"/.buildrc
